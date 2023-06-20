@@ -96,11 +96,15 @@ An OR gate is a gate that selects one of the facilities that make up the OR gate
 
 ### version
 
-#### V 0.0.1
+#### V 0.1.0
 * define process
 * define facilities, and sensors
 * return to dataframe
 
-#### V 0.0.2
+#### V 0.2.0
 * return to csv
 * return by facilies (it will return to seperated datafram by facilities)
+
+### V 0.2.1
+* Or gate can difine probability for branching
+* raise erorr when branch probability is not define

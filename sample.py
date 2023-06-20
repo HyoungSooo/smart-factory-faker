@@ -16,14 +16,15 @@ fa8 = Facility('test8', Sensor('test_sensor8', 1, 0))
 
 k = Route(start_node=fa1,
           route={
-              fa1.name: Or(fa2, fa3),
+              fa1.name: Or([0, 1], [fa2, fa3]),
               fa2.name: SeqLoop(fa4),
               fa3.name: SeqLoop(fa4),
               fa4.name: SeqLoop(fa5),
-              fa5.name: Or(fa6, fa7),
+              fa5.name: Or([0, 1], node=[fa6, fa7]),
               fa6.name: SeqLoop(fa5),
               fa7.name: None
           })
-df = k.to_dataframe(10)
-df_to_csv = k.to_csv(10, path='./res.csv')
-df_by_fa = k.by_facility(10)
+# df = k.to_dataframe(10)
+# df_to_csv = k.to_csv(10, path='./res.csv')
+df_by_fa = k.by_facility(100)
+print(df_by_fa)
