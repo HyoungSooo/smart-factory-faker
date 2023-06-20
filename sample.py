@@ -4,7 +4,8 @@ from factory.sensor import Sensor
 from process.gate import *
 from process.route import Route
 
-fa1 = Facility('test1', Sensor('test_sensor1', 1, 0))
+fa1 = Facility('test1', Sensor('test_sensor1', 1, 0),
+               Sensor('fa1 test_sessor', 10, 2))
 fa2 = Facility('test2', Sensor('test_sensor2', 1, 0))
 fa3 = Facility('test3', Sensor('test_sensor3', 1, 0))
 fa4 = Facility('test4', Sensor('test_sensor4', 1, 0))
@@ -23,7 +24,6 @@ k = Route(start_node=fa1,
               fa6.name: SeqLoop(fa5),
               fa7.name: None
           })
-
-print(k.route)
 df = k.to_dataframe(10)
-print(df)
+df_to_csv = k.to_csv(10, path='./res.csv')
+df_by_fa = k.by_facility(10)
