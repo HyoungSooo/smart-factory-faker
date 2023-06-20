@@ -5,15 +5,12 @@
 <clone this repotitory>
 ```
 
+This is a project that can build a fake data set with a process.
+You can define the route of the process and by defining the sensor, you can build a data set of the process in progress.
+
 quick starter
 
 ```python
-from factory.facility import Facility
-from factory.sensor import Sensor
-
-from process.gate import *
-from process.route import Route
-
 fa1 = Facility('test1', Sensor('test_sensor1', 1, 0),
                Sensor('fa1 test_sessor', 10, 2))
 fa2 = Facility('test2', Sensor('test_sensor2', 1, 0))
@@ -26,11 +23,11 @@ fa8 = Facility('test8', Sensor('test_sensor8', 1, 0))
 
 k = Route(start_node=fa1,
           route={
-              fa1.name: Or(fa2, fa3),
+              fa1.name: Or([0, 1], [fa2, fa3]),
               fa2.name: SeqLoop(fa4),
               fa3.name: SeqLoop(fa4),
               fa4.name: SeqLoop(fa5),
-              fa5.name: Or(fa6, fa7),
+              fa5.name: Or([0, 1], node=[fa6, fa7]),
               fa6.name: SeqLoop(fa5),
               fa7.name: None
           })
@@ -39,60 +36,10 @@ df_to_csv = k.to_csv(10, path='./res.csv') -> CSV
 df_by_fa = k.by_facility(10) -> dict(key: facility name, value: DataFrame)
 
 ```
+quick starter process map
+![image](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/bfcd35ca-6b70-4d3e-b33c-7fe06172cd29)
 
 
-
-A smart factory has a process also you can define the process.
-
-### Route
-
-Route class
-
-```python
-class Route:
-    def __init__(self, start_node, route) -> None:
-        self.start_node = start_node
-        self.route = route
-        self.logs = []
-        self.token_id_len = 10
-        self.senser_hash = {}
-        self.senser_pointer = 0
-
-k = Route(start_node=fa1,
-          route={
-            ...
-              fa1.name: Or(fa2, fa3),
-              fa2.name: SeqLoop(fa4),
-              fa3.name: SeqLoop(fa4),
-              fa4.name: SeqLoop(fa5),
-              fa5.name: Or(fa6, fa7),
-              fa6.name: SeqLoop(fa5),
-              fa7.name: None
-            ...
-          })
-```
-route must be a dictionary.
-
-### Gates
-
-```python
-class SeqLoop:
-    def __init__(self, node) -> None:
-        self.next = node
-
-    def get_next_node(self):
-        return self.next
-
-
-class Or:
-    def __init__(self, *node) -> None:
-        self.next = node
-
-    def get_next_node(self):
-        return random.choice(self.next)
-```
-SepLoop is a combination of sequence and loop gates.
-An OR gate is a gate that selects one of the facilities that make up the OR gate.
 
 ### version
 
