@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import string
 import random
+from collections import defaultdict
 
 
 class Route:
@@ -10,18 +11,20 @@ class Route:
         self.start_node = start_node
         self.route = route
         self.logs = []
+        self._by_fa = defaultdict(list)
+        self._fa_sensor_name = defaultdict(list)
         self.token_id_len = 10
         self.senser_hash = {}
         self.senser_pointer = 0
 
-    def run(self, iter):
+    def _run(self, iter, by_fa=False):
 
         stack = deque([])
 
         for i in range(iter):
             time = datetime.now() + timedelta(seconds=i)
-            token_id = self.unique_id(self.token_id_len)
-            self.set_logs(token_id, self.start_node, time=time)
+            token_id = self._unique_id(self.token_id_len)
+            self._set_logs(token_id, self.start_node, time=time, by_fa=by_fa)
             stack.append((token_id, self.route[self.start_node.name], time))
 
         while stack:
@@ -29,7 +32,7 @@ class Route:
 
             node = gate.get_next_node()
 
-            node, time = self.set_logs(token_id, node, time)
+            node, time = self._set_logs(token_id, node, time, by_fa=by_fa)
 
             if self.route[node.name] == None:
                 continue
@@ -37,19 +40,28 @@ class Route:
             stack.append((token_id, self.route[node.name], time))
 
     def to_dataframe(self, iter):
-        self.run(iter)
+        self._run(iter)
         for i in self.logs:
-            self.pad_list(i, 3 + self.senser_pointer)
+            self._pad_list(i, 3 + self.senser_pointer)
         sensor_columns = [i[0] for i in sorted(
             self.senser_hash.items(), key=lambda x: x[1])]
 
         return pd.DataFrame(self.logs, columns=['token_id', 'facility', '@timestamp'] + sensor_columns)
 
-    def set_logs(self, token_id, node, time):
-        sensor_log = self._generate_sensor_log(node.sensor)
-        log_entry = [token_id, node.name, time +
-                     timedelta(node.time)] + sensor_log
-        self.logs.append(log_entry)
+    def _set_logs(self, token_id, node, time, by_fa=False):
+        if by_fa:
+            sensor_log = self._generate_sensor_log_by_facility(node.sensor)
+            log_entry = [token_id, node.name, time +
+                         timedelta(node.time)] + sensor_log
+            if not self._fa_sensor_name[node.name]:
+                self._fa_sensor_name[node.name] = [i.name for i in node.sensor]
+            self._by_fa[node.name].append(log_entry)
+        else:
+
+            sensor_log = self._generate_sensor_log(node.sensor)
+            log_entry = [token_id, node.name, time +
+                         timedelta(node.time)] + sensor_log
+            self.logs.append(log_entry)
         return node, time + timedelta(node.time)
 
     def _generate_sensor_log(self, sensors):
@@ -71,12 +83,21 @@ class Route:
                 self.senser_pointer += 1
         return sensor_log
 
-    def unique_id(self, size):
+    def _generate_sensor_log_by_facility(self, sensors):
+        sensor_log = [None] * len(sensors)
+
+        for index in range(len(sensors)):
+            sensor_log[index] = random.uniform(
+                sensors[index].min_value, sensors[index].max_value)
+
+        return sensor_log
+
+    def _unique_id(self, size):
         chars = list(set(string.ascii_uppercase +
                      string.digits).difference('LIO01'))
         return ''.join(random.choices(chars, k=size))
 
-    def pad_list(self, list_to_pad, desired_length):
+    def _pad_list(self, list_to_pad, desired_length):
         """
         Pads a list with the given padding value to the desired length.
 
@@ -94,3 +115,16 @@ class Route:
             padded_list.append(None)
 
         return padded_list
+
+    def to_csv(self, iter, path):
+        df = self.to_dataframe(iter)
+        df.to_csv(path, ',')
+
+    def by_facility(self, iter):
+        self._run(iter, by_fa=True)
+
+        for key, logs in self._by_fa.items():
+            self._by_fa[key] = pd.DataFrame(
+                logs, columns=['token_id', 'facility', '@timestamp'] + self._fa_sensor_name[key])
+
+        return self._by_fa

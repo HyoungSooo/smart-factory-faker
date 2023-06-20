@@ -14,7 +14,8 @@ from factory.sensor import Sensor
 from process.gate import *
 from process.route import Route
 
-fa1 = Facility('test1', Sensor('test_sensor1', 1, 0))
+fa1 = Facility('test1', Sensor('test_sensor1', 1, 0),
+               Sensor('fa1 test_sessor', 10, 2))
 fa2 = Facility('test2', Sensor('test_sensor2', 1, 0))
 fa3 = Facility('test3', Sensor('test_sensor3', 1, 0))
 fa4 = Facility('test4', Sensor('test_sensor4', 1, 0))
@@ -33,19 +34,10 @@ k = Route(start_node=fa1,
               fa6.name: SeqLoop(fa5),
               fa7.name: None
           })
+df = k.to_dataframe(10) -> Dataframe
+df_to_csv = k.to_csv(10, path='./res.csv') -> CSV
+df_by_fa = k.by_facility(10) -> dict(key: facility name, value: DataFrame)
 
-print(k.route)
-df = k.to_dataframe(10)
-print(df)
-
-# result
-#token_id facility                 @timestamp  test_sensor1  test_sensor3  test_sensor2  test_sensor4  test_sensor5  test_sensor6  test_sensor7
-#0   XEYHB2MFRD    test1 2023-06-19 22:07:39.492403      0.552032           NaN           NaN           NaN           NaN           NaN           NaN
-#1   NFW9NKEH7Z    test1 2023-06-19 22:07:40.492403      0.120843           NaN           NaN           NaN           NaN           NaN           NaN
-#2   7VVAZZH273    test1 2023-06-19 22:07:41.492403      0.281798           NaN           NaN           NaN           NaN           NaN           NaN
-#3   M28REE9JSW    test1 2023-06-19 22:07:42.492403      0.500399           NaN           NaN           NaN           NaN           NaN           NaN
-#4   XFY6MNDB4E    test1 2023-06-19 22:07:43.492403      0.188721           NaN           NaN           NaN           NaN           NaN           NaN
-#..         ...      ...                        ...           ...           ...           ...           ...           ...           ...           ...
 ```
 
 
@@ -108,3 +100,7 @@ An OR gate is a gate that selects one of the facilities that make up the OR gate
 * define process
 * define facilities, and sensors
 * return to dataframe
+
+#### V 0.0.2
+* return to csv
+* return by facilies (it will return to seperated datafram by facilities)
