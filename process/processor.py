@@ -37,7 +37,8 @@ class Route:
             if self.route[node.name] == None:
                 continue
 
-            stack.append((token_id, self.route[node.name], time))
+            stack.append(
+                (token_id, self.route[node.name], time + timedelta(seconds=node.time)))
 
     def to_dataframe(self, iter):
         self._run(iter)
@@ -52,7 +53,7 @@ class Route:
         if by_fa:
             sensor_log = self._generate_sensor_log_by_facility(node.sensor)
             log_entry = [token_id, node.name, time +
-                         timedelta(node.time)] + sensor_log
+                         timedelta(seconds=node.time)] + sensor_log
             if not self._fa_sensor_name[node.name]:
                 self._fa_sensor_name[node.name] = [i.name for i in node.sensor]
             self._by_fa[node.name].append(log_entry)
@@ -60,7 +61,7 @@ class Route:
 
             sensor_log = self._generate_sensor_log(node.sensor)
             log_entry = [token_id, node.name, time +
-                         timedelta(node.time)] + sensor_log
+                         timedelta(seconds=node.time)] + sensor_log
             self.logs.append(log_entry)
         return node, time + timedelta(node.time)
 
@@ -69,17 +70,17 @@ class Route:
         for sensor in sensors:
             if sensor.name in self.senser_hash:
                 try:
-                    sensor_log[self.senser_hash[sensor.name]] = random.uniform(
-                        sensor.min_value, sensor.max_value)
+                    sensor_log[self.senser_hash[sensor.name]
+                               ] = sensor._get_value()
                 except IndexError:
                     diff = self.senser_hash[sensor.name] - len(sensor_log)
                     sensor_log += [None] * diff + \
-                        [random.uniform(sensor.min_value, sensor.max_value)]
+                        [sensor._get_value()]
             else:
                 self.senser_hash[sensor.name] = self.senser_pointer
                 diff = self.senser_hash[sensor.name] - len(sensor_log)
                 sensor_log += [None] * diff + \
-                    [random.uniform(sensor.min_value, sensor.max_value)]
+                    [sensor._get_value()]
                 self.senser_pointer += 1
         return sensor_log
 
@@ -87,9 +88,7 @@ class Route:
         sensor_log = [None] * len(sensors)
 
         for index in range(len(sensors)):
-            sensor_log[index] = random.uniform(
-                sensors[index].min_value, sensors[index].max_value)
-
+            sensor_log[index] = sensors[index]._get_values()
         return sensor_log
 
     def _unique_id(self, size):

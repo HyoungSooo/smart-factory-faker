@@ -55,3 +55,6 @@ quick starter process map
 ### V 0.2.1
 * Or gate can difine probability for branching
 * raise erorr when branch probability is not define
+
+### V 0.3.1
+* Create BoolSensor
