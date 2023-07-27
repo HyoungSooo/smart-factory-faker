@@ -1,7 +1,12 @@
 import random
 
 
-class Sensor:
+class BaseSensor:
+    def _get_values(self):
+        pass
+
+
+class Sensor(BaseSensor):
     def __init__(self, name, max_value, min_value) -> None:
         self.name = name
         self.max_value = max_value
@@ -13,7 +18,7 @@ class Sensor:
             self.min_value, self.max_value)
 
 
-class BoolSensor:
+class BoolSensor(BaseSensor):
     def __init__(self, name, true_rate):
         self.name = name
         self.true_rate = true_rate
