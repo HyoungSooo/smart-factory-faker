@@ -48,8 +48,9 @@ ProcessVisualize('./', 'test', 'text graph',
                  'test').visuallizer(fa1, route=route)
 
 ```
-quick starter process map
-![image](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/bfcd35ca-6b70-4d3e-b33c-7fe06172cd29)
+quick starter visualize result
+![test](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/c8a04974-d46a-477b-b2f1-085fc20a36a9)
+
 
 
 

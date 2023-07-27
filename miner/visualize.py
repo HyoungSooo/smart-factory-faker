@@ -29,6 +29,9 @@ class ProcessVisualize:
 
     def visuallizer(self, start_node, route):
         self.graph.node(name=start_node.name)
+        self.graph.node(name='start')
+
+        self.graph.edge(tail_name='start', head_name=start_node.name)
         visited = set()
 
         stack = [start_node]
@@ -48,6 +51,10 @@ class ProcessVisualize:
 
                 if route[next_node.name] != None and next_node.name not in visited:
                     stack.append(next_node)
+
+                if route[next_node.name] == None:
+                    self.graph.node(name='end')
+                    self.graph.edge(tail_name=next_node.name, head_name='end')
         self.graph.view()  # 사전에 정의한 format으로 저장 및 파일 열기
 
         return self.graph.source  # 소스 텍스트 출력
