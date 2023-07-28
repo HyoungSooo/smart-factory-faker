@@ -48,11 +48,17 @@ ProcessVisualize('./', 'test', 'text graph',
                  'test').visuallizer(fa1, route=route)
 
 ```
-quick starter visualize result
+quick starter visualizer result
+
+
 ![test](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/c8a04974-d46a-477b-b2f1-085fc20a36a9)
 
 
+quick starter Huristic visualize result
+![test](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/68ccfec6-4d0e-407d-b21b-479840b0bc5b)
 
+
+Graphviz must be installed to visualize
 
 ### version
 
@@ -73,7 +79,10 @@ quick starter visualize result
 * Create BoolSensor
 
 ### V 0.4.0
-* Create method using heap(This function is more accurate Route fucntion is no longer maintained)
+* Create method using heap(This function is more accurate Processor class is no longer maintained)
 
 ### V 0.4.1
 * Can visualize the difined route
+
+### v 0.5.0
+* Huristic visualizer function is created(This function plots a number on a edge)

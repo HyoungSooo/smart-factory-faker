@@ -139,4 +139,5 @@ class BaseProcessor:
           path: The path to the CSV file.
         """
         df = self.to_dataframe(iter)
+        df = df.sort_values(by='@timestamp')
         df.to_csv(path, ',')
