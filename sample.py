@@ -1,3 +1,4 @@
+from Mandrova.data_generator import SensorDataGenerator as sdg
 from factory.facility import Facility
 from factory.sensor import Sensor, BoolSensor
 
@@ -32,4 +33,14 @@ j = CallStackProcessor(start_node=fa1,
 print(j.logs)
 df = j.to_dataframe(100)
 ProcessVisualize('./', 'test', 'text graph',
-                       'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=True)
+                       'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=False)
+
+
+dg = sdg()
+dg.generation_input.add_option(sensor_names="HelloGauss",
+                               distribution="normal",
+                               mu=0,
+                               sigma=1)
+dg.generate(sample_size=10)
+print(type(dg.data))
+dg.plot_data()
