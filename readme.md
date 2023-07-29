@@ -60,6 +60,13 @@ quick starter Huristic visualize result
 ![test](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/68ccfec6-4d0e-407d-b21b-479840b0bc5b)
 
 
+View Process Map with sensor infomation
+
+
+![test](https://github.com/HyoungSooo/smart-factory-faker/assets/86239441/1258d83d-6024-458d-a282-ebd25cd3dbb4)
+
+
+
 Graphviz must be installed to visualize
 
 ### version
@@ -88,3 +95,6 @@ Graphviz must be installed to visualize
 
 ### v 0.5.0
 * Huristic visualizer function is created(This function plots a number on a edge)
+
+### V 0.5.1
+* Visualizer can show sensor infomation

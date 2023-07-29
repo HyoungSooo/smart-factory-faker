@@ -17,11 +17,11 @@ fa7 = Facility('test7', Sensor('test_sensor7', 1, 0), time=50)
 fa8 = Facility('test8', Sensor('test_sensor8', 1, 0), time=50)
 
 route = {
-    fa1.name: Or([0, 1], [fa2, fa3]),
+    fa1.name: Or([0.5, 0.5], [fa2, fa3]),
     fa2.name: SeqLoop(fa4),
     fa3.name: SeqLoop(fa4),
     fa4.name: SeqLoop(fa5),
-    fa5.name: Or([0, 1], node=[fa6, fa7]),
+    fa5.name: Or([0.2, 0.8], node=[fa6, fa7]),
     fa6.name: SeqLoop(fa5),
     fa7.name: None
 }
@@ -32,4 +32,4 @@ j = CallStackProcessor(start_node=fa1,
 print(j.logs)
 df = j.to_dataframe(100)
 ProcessVisualize('./', 'test', 'text graph',
-                       'test').huristic_visualizer(start_node=fa1, route=route, df=df)
+                       'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=True)

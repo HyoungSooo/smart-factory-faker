@@ -20,35 +20,6 @@ class Processor(BaseProcessor):
         self.senser_hash = {}
         self.senser_pointer = 0
 
-    def to_dataframe(self, iter):
-        """
-          Generate a Pandas DataFrame from the logs.
-
-          Args:
-            iter: The number of iterations.
-
-          Returns:
-            A Pandas DataFrame.
-        """
-        self._run(iter)
-        for i in self.logs:
-            self._pad_list(i, 3 + self.senser_pointer)
-        sensor_columns = [i[0] for i in sorted(
-            self.senser_hash.items(), key=lambda x: x[1])]
-
-        return pd.DataFrame(self.logs, columns=['token_id', 'facility', '@timestamp'] + sensor_columns)
-
-    def to_csv(self, iter, path):
-        """
-        Save the DataFrame to a CSV file.
-
-        Args:
-          iter: The number of iterations.
-          path: The path to the CSV file.
-        """
-        df = self.to_dataframe(iter)
-        df.to_csv(path, ',')
-
     def by_facility(self, iter):
         """
         Generate a Pandas DataFrame for each facility.

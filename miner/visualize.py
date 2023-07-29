@@ -14,11 +14,17 @@ class ProcessVisualize:
                              strict=True  # 파일 저장 디렉토리
                              )
 
-    def visuallizer(self, start_node, route, view_now=False):
+    def _create_sensor_node(self, sensors, tail_node):
+        for sensor in sensors:
+            self.graph.node(sensor.name, color='blue')
+            self.graph.edge(tail_name=sensor.name, head_name=tail_node.name)
+
+    def visuallizer(self, start_node, route, view_now=False, veiw_sensor=False):
         self.graph.node(name=start_node.name)
         self.graph.node(name='start')
 
         self.graph.edge(tail_name='start', head_name=start_node.name)
+
         visited = set()
 
         stack = [start_node]
@@ -27,6 +33,9 @@ class ProcessVisualize:
             parent_node = stack.pop()
             visited.add(parent_node.name)
             nodes = route[parent_node.name].get_next_node(get_all_node=True)
+
+            if veiw_sensor:
+                self._create_sensor_node(parent_node.sensor, parent_node)
 
             if type(nodes) != list:
                 nodes = [nodes]
@@ -48,8 +57,8 @@ class ProcessVisualize:
 
         return self.graph.source  # 소스 텍스트 출력
 
-    def huristic_visualizer(self, start_node, route, df: pd.DataFrame):
-        self.visuallizer(start_node, route, False)
+    def huristic_visualizer(self, start_node, route, df: pd.DataFrame, view_now=False, veiw_sensor=False):
+        self.visuallizer(start_node, route, view_now, veiw_sensor)
 
         token_hash = defaultdict(list)
         sensor_hash = defaultdict(int)
@@ -70,7 +79,7 @@ class ProcessVisualize:
 
             self.graph.edge(
                 tail_name=sensors[0], head_name=sensors[1], label=str(count))
-
-        self.graph.view()
+        if view_now:
+            self.graph.view()
 
         return sensor_hash
