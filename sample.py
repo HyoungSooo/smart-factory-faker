@@ -1,4 +1,4 @@
-from Mandrova.data_generator import SensorDataGenerator as sdg
+from sensor_data_generator.data_generator import SensorDataGenerator as sdg
 from factory.facility import Facility
 from factory.sensor import Sensor, BoolSensor
 
