@@ -26,14 +26,18 @@ class CallStackProcessor(BaseProcessor):
 
             node = gate.get_next_node()
 
-            node, time = self._set_logs(
-                token_id, node, time, by_fa=False)
+            if node._check_is_running(time):
+                node, time = self._set_logs(
+                    token_id, node, time)
 
-            if self.route[node.name] == None:
-                continue
+                if self.route[node.name] == None:
+                    continue
 
-            heapq.heappush(
-                token_stack, [time, token_id,  self.route[node.name]])
+                heapq.heappush(
+                    token_stack, [time, token_id,  self.route[node.name]])
+            else:
+                heapq.heappush(
+                    token_stack, [time + 1, token_id, gate])
 
     def _set_start_token(self, iter):
         stack = []
@@ -41,24 +45,15 @@ class CallStackProcessor(BaseProcessor):
         for i in range(iter):
             token_id = self._unique_id(self.token_id_len)
             node, time = self._set_logs(token_id, self.start_node,
-                                        time=time, by_fa=False)
+                                        time=time)
             stack.append(
                 [time, token_id, self.route[self.start_node.name]])
 
         return stack
 
-    def _set_logs(self, token_id, node, time, by_fa=False):
-        if by_fa:
-            sensor_log = self._generate_sensor_log_by_facility(node.sensor)
-            log_entry = [token_id, node.name, self.now + timedelta(seconds=time) +
-                         timedelta(seconds=node.time)] + sensor_log
-            if not self._fa_sensor_name[node.name]:
-                self._fa_sensor_name[node.name] = [i.name for i in node.sensor]
-            self._by_fa[node.name].append(log_entry)
-        else:
-
-            sensor_log = self._generate_sensor_log(node.sensor)
-            log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
-                         timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
-            self.logs.append(log_entry)
+    def _set_logs(self, token_id, node, time):
+        sensor_log = self._generate_sensor_log(node.sensor)
+        log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
+                                                            timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
+        self.logs.append(log_entry)
         return node, time + node.time

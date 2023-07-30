@@ -1,4 +1,5 @@
 import random
+from sensor_data_generator.data_generator import SensorDataGenerator as sdg
 
 
 class BaseSensor:
@@ -7,15 +8,16 @@ class BaseSensor:
 
 
 class Sensor(BaseSensor):
-    def __init__(self, name, max_value, min_value) -> None:
+    def __init__(self, name, mean_value, sigma, distribution) -> None:
         self.name = name
-        self.max_value = max_value
-        self.min_value = min_value
+        self.data_generator = sdg()
+        self.data_generator.generation_input.add_option(sensor_names=name,
+                                                        distribution=distribution,
+                                                        mu=mean_value,
+                                                        sigma=sigma)
 
     def _get_values(self):
-
-        return random.uniform(
-            self.min_value, self.max_value)
+        return self.data_generator.generate(sample_size=1)[self.name].values.tolist()[0]
 
 
 class BoolSensor(BaseSensor):
