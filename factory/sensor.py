@@ -19,6 +19,9 @@ class Sensor(BaseSensor):
     def _get_values(self):
         return self.data_generator.generate(sample_size=1)[self.name].values.tolist()[0]
 
+    def _get_data_generator(self):
+        return self.data_generator.data
+
 
 class BoolSensor(BaseSensor):
     def __init__(self, name, true_rate):

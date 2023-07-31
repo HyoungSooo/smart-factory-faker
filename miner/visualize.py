@@ -1,6 +1,7 @@
 from graphviz import Digraph
 import pandas as pd
 from collections import defaultdict
+from sensor_data_generator.data_generator import SensorDataGenerator as sdg
 
 
 class ProcessVisualize:
@@ -83,3 +84,13 @@ class ProcessVisualize:
             self.graph.view()
 
         return sensor_hash
+
+
+class PlotData:
+    def __init__(self) -> None:
+        self.sdg = sdg()
+
+    def sensor_data_view_plot(self, df, sensor_name):
+        self.sdg.data = df[sensor_name].to_frame().dropna()
+
+        self.sdg.plot_data()

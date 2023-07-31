@@ -2,10 +2,10 @@ from sensor_data_generator.data_generator import SensorDataGenerator as sdg
 from factory.facility import Facility
 from factory.sensor import Sensor, BoolSensor
 
-from process.gate import *
+from factory.gate import *
 from process.processor import Processor
 from process.processor_stack import CallStackProcessor
-from miner.visualize import ProcessVisualize
+from miner.visualize import ProcessVisualize, PlotData
 
 fa1 = Facility('test1', Sensor('test_sensor1', 1, 1, 'normal'),
                BoolSensor('fa1 test_sessor', 0.2), time=1)
@@ -31,16 +31,17 @@ j = CallStackProcessor(start_node=fa1,
                        route=route)
 
 print(j.logs)
-df = j.to_csv(100, './test.csv')
+df = j.to_dataframe(1000)
 # ProcessVisualize('./', 'test', 'text graph',
 #                        'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=False)
+PlotData().sensor_data_view_plot(df, 'test_sensor1')
 
 
-# dg = sdg()
-# dg.generation_input.add_option(sensor_names="HelloGauss",
-#                                distribution="normal",
-#                                mu=0,
-#                                sigma=1)
-# print(dg.generate(sample_size=1))
-# print(type(dg.data))
-# dg.plot_data()
+dg = sdg()
+dg.generation_input.add_option(sensor_names="HelloGauss",
+                               distribution="normal",
+                               mu=0,
+                               sigma=1)
+print(dg.generate(sample_size=1))
+print(type(dg.data))
+dg.plot_data()
