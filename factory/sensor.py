@@ -8,19 +8,22 @@ class BaseSensor:
 
 
 class Sensor(BaseSensor):
-    def __init__(self, name, mean_value, sigma, distribution) -> None:
+    def __init__(self, name, payload) -> None:
         self.name = name
         self.data_generator = sdg()
         self.data_generator.generation_input.add_option(sensor_names=name,
-                                                        distribution=distribution,
-                                                        mu=mean_value,
-                                                        sigma=sigma)
+                                                        **payload)
 
     def _get_values(self):
         return self.data_generator.generate(sample_size=1)[self.name].values.tolist()[0]
 
     def _get_data_generator(self):
         return self.data_generator.data
+
+    def view_sensor_data_plot(self, count):
+        self.data_generator.generate(sample_size=count)
+
+        self.data_generator.plot_data()
 
 
 class BoolSensor(BaseSensor):

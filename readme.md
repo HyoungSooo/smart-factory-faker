@@ -110,3 +110,6 @@ Graphviz must be installed to visualize
 
 ### V 0.7.0
 * Sensor data can be visualized as a plot
+
+### V 0.7.1
+* Refactoring the code
