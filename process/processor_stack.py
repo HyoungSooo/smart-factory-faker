@@ -38,7 +38,6 @@ class CallStackProcessor(BaseProcessor):
             else:
                 heapq.heappush(
                     token_stack, [time + 1, token_id, gate])
-        print(node.sensor[0]._get_data_generator())
 
     def _set_start_token(self, iter):
         stack = []
