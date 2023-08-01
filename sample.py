@@ -1,6 +1,6 @@
 from sensor_data_generator.data_generator import SensorDataGenerator as sdg
 from factory.facility import Facility
-from factory.sensor import Sensor, BoolSensor
+from factory.sensor import Sensor
 
 from factory.gate import *
 from process.processor import Processor
@@ -18,9 +18,13 @@ uniform = {
     'lo': 0,
     'hi': 1
 }
+payload = {
+    'break_condition_low': 0,
+    'error_condition': 0
+}
 
-fa1 = Facility('test1', Sensor('test_sensor1', normal),
-               BoolSensor('fa1 test_sessor', 0.2), time=1)
+fa1 = Facility('test1', Sensor(
+    'test_sensor1', normal).add_option(**payload), time=1)
 fa2 = Facility('test2', Sensor('test_sensor2', normal), time=2)
 fa3 = Facility('test3', Sensor('test_sensor3', normal), time=3)
 fa4 = Facility('test4', Sensor('test_sensor4', normal), time=5)
@@ -34,7 +38,7 @@ route = {
     fa2.name: SeqLoop(fa4),
     fa3.name: SeqLoop(fa4),
     fa4.name: SeqLoop(fa5),
-    fa5.name: Or([0.2, 0.8], node=[fa6, fa7]),
+    fa5.name: Or([0.1, 0.9], node=[fa6, fa7]),
     fa6.name: SeqLoop(fa5),
     fa7.name: None
 }
@@ -42,17 +46,9 @@ route = {
 j = CallStackProcessor(start_node=fa1,
                        route=route)
 
-df = j.to_dataframe(1000)
-# ProcessVisualize('./', 'test', 'text graph',
-#                        'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=False)
-PlotData().sensor_data_view_plot(df, 'test_sensor1')
+df = j.to_dataframe(100)
 
-
-dg = sdg()
-dg.generation_input.add_option(sensor_names="HelloGauss",
-                               distribution="normal",
-                               mu=0,
-                               sigma=1)
-print(dg.generate(sample_size=1))
-print(type(dg.data))
-dg.plot_data()
+print(j.break_points)
+ProcessVisualize('./', 'test', 'text graph',
+                       'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=True)
+# PlotData().sensor_data_view_plot(df, 'test_sensor1')

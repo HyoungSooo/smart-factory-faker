@@ -3,9 +3,16 @@ from datetime import datetime, timedelta
 import string
 import random
 import pandas as pd
+from collections import defaultdict
 
 
 class BaseProcessor:
+    def __init__(self):
+        self.senser_hash = {}
+        self.senser_pointer = 0
+        self._fa_sensor_name = defaultdict(list)
+        self.token_id_len = 10
+
     def _run(self, iter, by_fa=False):
         '''The `_run()` function runs the simulation for the given number of iterations.
         It first generates a unique ID for each token.
@@ -63,23 +70,31 @@ class BaseProcessor:
         return node, time + timedelta(node.time)
 
     def _generate_sensor_log(self, sensors):
-        sensor_log = [None] * self.senser_pointer
+        base_sensor_log = [None] * self.senser_pointer
         for sensor in sensors:
-            if sensor.name in self.senser_hash:
-                try:
-                    sensor_log[self.senser_hash[sensor.name]
-                               ] = sensor._get_values()
-                except IndexError:
-                    diff = self.senser_hash[sensor.name] - len(sensor_log)
-                    sensor_log += [None] * diff + \
-                        [sensor._get_values()]
+            flag, data = sensor._get_values()
+            if flag:
+                if sensor.name in self.senser_hash:
+                    try:
+                        base_sensor_log[self.senser_hash[sensor.name]
+                                        ] = data
+                    except IndexError:
+                        diff = self.senser_hash[sensor.name] - \
+                            len(base_sensor_log)
+                        base_sensor_log += [None] * diff + \
+                            [data]
+                else:
+                    self.senser_hash[sensor.name] = self.senser_pointer
+                    diff = self.senser_hash[sensor.name] - len(base_sensor_log)
+                    base_sensor_log += [None] * diff + \
+                        [data]
+                    self.senser_pointer += 1
             else:
-                self.senser_hash[sensor.name] = self.senser_pointer
-                diff = self.senser_hash[sensor.name] - len(sensor_log)
-                sensor_log += [None] * diff + \
-                    [sensor._get_values()]
-                self.senser_pointer += 1
-        return sensor_log
+                break
+        else:
+            return flag, base_sensor_log
+
+        return flag, data
 
     def _generate_sensor_log_by_facility(self, sensors):
         sensor_log = [None] * len(sensors)
@@ -128,7 +143,7 @@ class BaseProcessor:
         sensor_columns = [i[0] for i in sorted(
             self.senser_hash.items(), key=lambda x: x[1])]
 
-        return pd.DataFrame(self.logs, columns=['token_id', 'facility', '@timestamp'] + sensor_columns)
+        return pd.DataFrame(self.logs, columns=['token_id', 'facility', '@timestamp'] + sensor_columns).sort_values(by='@timestamp')
 
     def to_csv(self, iter, path):
         """

@@ -10,12 +10,10 @@ class CallStackProcessor(BaseProcessor):
         self.start_node = start_node
         self.route = route
         self.logs = []
-        self._by_fa = defaultdict(list)
-        self._fa_sensor_name = defaultdict(list)
-        self.token_id_len = 10
-        self.senser_hash = {}
-        self.senser_pointer = 0
         self.now = datetime.now()
+        self.break_points = defaultdict(str)
+
+        super().__init__()
 
     def _run(self, iter):
         token_stack = self._set_start_token(iter)
@@ -27,14 +25,15 @@ class CallStackProcessor(BaseProcessor):
             node = gate.get_next_node()
 
             if node._check_is_running(time):
-                node, time = self._set_logs(
+                node, time, flag = self._set_logs(
                     token_id, node, time)
 
                 if self.route[node.name] == None:
                     continue
 
-                heapq.heappush(
-                    token_stack, [time, token_id,  self.route[node.name]])
+                if flag:
+                    heapq.heappush(
+                        token_stack, [time, token_id,  self.route[node.name]])
             else:
                 heapq.heappush(
                     token_stack, [time + 1, token_id, gate])
@@ -44,16 +43,22 @@ class CallStackProcessor(BaseProcessor):
         time = 0
         for i in range(iter):
             token_id = self._unique_id(self.token_id_len)
-            node, time = self._set_logs(token_id, self.start_node,
-                                        time=time)
+            node, time, flag = self._set_logs(token_id, self.start_node,
+                                              time=time)
+            if not flag:
+                continue
             stack.append(
                 [time, token_id, self.route[self.start_node.name]])
 
         return stack
 
     def _set_logs(self, token_id, node, time):
-        sensor_log = self._generate_sensor_log(node.sensor)
-        log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
-                                                            timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
-        self.logs.append(log_entry)
-        return node, time + node.time
+        flag, sensor_log = self._generate_sensor_log(node.sensor)
+        if flag:
+            log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
+                                                                timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
+            self.logs.append(log_entry)
+            return node, time + node.time, True
+        else:
+            self.break_points[token_id] = sensor_log
+            return node, time, False

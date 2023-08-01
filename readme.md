@@ -50,3 +50,6 @@ You can define the route of the process and by defining the sensor, you can buil
 
 ### V 0.7.1
 * Refactoring the code
+
+### V 0.7.2
+* fixed bug

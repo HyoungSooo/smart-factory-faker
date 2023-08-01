@@ -59,7 +59,7 @@ class ProcessVisualize:
         return self.graph.source  # 소스 텍스트 출력
 
     def huristic_visualizer(self, start_node, route, df: pd.DataFrame, view_now=False, veiw_sensor=False):
-        self.visuallizer(start_node, route, view_now, veiw_sensor)
+        self.visuallizer(start_node, route, False, veiw_sensor)
 
         token_hash = defaultdict(list)
         sensor_hash = defaultdict(int)

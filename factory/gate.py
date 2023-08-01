@@ -1,4 +1,5 @@
 import random
+from numpy.random import choice
 
 
 class SeqLoop:
@@ -19,6 +20,6 @@ class Or:
     def get_next_node(self, get_all_node=False):
         if not get_all_node:
             node = random.choices(
-                self.next, weights=self.branch_probability, k=1)
+                self.next, weights=self.branch_probability)
             return node[0]
         return self.next
