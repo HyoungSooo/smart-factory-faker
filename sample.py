@@ -34,11 +34,11 @@ fa7 = Facility('test7', Sensor('test_sensor7', uniform), time=50)
 fa8 = Facility('test8', Sensor('test_sensor8', uniform), time=50)
 
 route = {
-    fa1.name: Or([0.5, 0.5], [fa2, fa3]),
+    fa1.name: Or([1, 1], [fa2, fa3]),
     fa2.name: SeqLoop(fa4),
     fa3.name: SeqLoop(fa4),
     fa4.name: SeqLoop(fa5),
-    fa5.name: Or([0.1, 0.9], node=[fa6, fa7]),
+    fa5.name: Or([1, 9], node=[fa6, fa7]),
     fa6.name: SeqLoop(fa5),
     fa7.name: None
 }
