@@ -56,3 +56,6 @@ You can define the route of the process and by defining the sensor, you can buil
 
 ### V 0.7.3
 * Change the code to get the next node
+
+### V 0.8.0
+* Can be separated by facility
