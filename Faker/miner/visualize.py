@@ -1,7 +1,7 @@
 from graphviz import Digraph
 import pandas as pd
 from collections import defaultdict
-from sensor_data_generator.data_generator import SensorDataGenerator as sdg
+from Faker.sensor_data_generator.data_generator import SensorDataGenerator as sdg
 
 
 class ProcessVisualize:
