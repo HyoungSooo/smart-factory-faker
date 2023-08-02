@@ -2,7 +2,7 @@
 
 ### how to use
 ```shell
-<clone this repotitory>
+pip install smart-factory-faker
 ```
 
 This is a project that can build a fake data set with a process.
