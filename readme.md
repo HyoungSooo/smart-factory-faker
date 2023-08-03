@@ -59,3 +59,7 @@ You can define the route of the process and by defining the sensor, you can buil
 
 ### V 0.8.0
 * Can be separated by facility
+
+### V 0.9.0
+* refactoring code
+* can see facilities history(Facility performance record => DataFrame(columns = [@timestamp, expire, wait]))

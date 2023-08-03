@@ -20,11 +20,12 @@ class CallStackProcessor(BaseProcessor):
         heapq.heapify(token_stack)
 
         while token_stack:
-            time, token_id, gate = heapq.heappop(token_stack)
+            time, token_id, gate, node = heapq.heappop(token_stack)
 
-            node = gate.get_next_node()
+            if not node:
+                node = gate.get_next_node()
 
-            if node._check_is_running(time):
+            if node._check_is_running(time, self.now):
                 node, time, flag = self._set_logs(
                     token_id, node, time)
 
@@ -33,10 +34,10 @@ class CallStackProcessor(BaseProcessor):
 
                 if flag:
                     heapq.heappush(
-                        token_stack, [time, token_id,  self.route[node.name]])
+                        token_stack, [time, token_id,  self.route[node.name], None])
             else:
                 heapq.heappush(
-                    token_stack, [time + 1, token_id, gate])
+                    token_stack, [time + 1, token_id, gate, node])
 
     def _set_start_token(self, iter):
         stack = []
@@ -48,7 +49,7 @@ class CallStackProcessor(BaseProcessor):
             if not flag:
                 continue
             stack.append(
-                [time, token_id, self.route[self.start_node.name]])
+                [time, token_id, self.route[self.start_node.name], None])
 
         return stack
 

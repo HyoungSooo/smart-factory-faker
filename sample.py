@@ -1,11 +1,11 @@
-from sensor_data_generator.data_generator import SensorDataGenerator as sdg
-from factory.facility import Facility
-from factory.sensor import Sensor
+from Faker.sensor_data_generator.data_generator import SensorDataGenerator as sdg
+from Faker.factory.facility import Facility
+from Faker.factory.sensor import Sensor
 
-from factory.gate import *
-from process.processor import Processor
-from process.processor_stack import CallStackProcessor
-from miner.visualize import ProcessVisualize, PlotData
+from Faker.factory.gate import *
+from Faker.process.processor import Processor
+from Faker.process.processor_stack import CallStackProcessor
+from Faker.miner.visualize import ProcessVisualize, PlotData
 
 normal = {
     'distribution': 'normal',
@@ -19,13 +19,12 @@ uniform = {
     'hi': 1
 }
 payload = {
-    'break_condition_low': 0,
     'error_condition': 0
 }
 
 fa1 = Facility('test1', Sensor(
     'test_sensor1', normal).add_option(**payload), time=1)
-fa2 = Facility('test2', Sensor('test_sensor2', normal), time=2)
+fa2 = Facility('test2', Sensor('test_sensor2', normal), time=5)
 fa3 = Facility('test3', Sensor('test_sensor3', normal), time=3)
 fa4 = Facility('test4', Sensor('test_sensor4', normal), time=5)
 fa5 = Facility('test5', Sensor('test_sensor5', uniform), time=10)
@@ -48,7 +47,9 @@ j = CallStackProcessor(start_node=fa1,
 
 df = j.to_dataframe(100)
 
-print(j.break_points)
+print(fa2.history)
+
+# print(j.break_points)
 ProcessVisualize('./', 'test', 'text graph',
                        'test').huristic_visualizer(start_node=fa1, route=route, df=df, veiw_sensor=True, view_now=True)
-# PlotData().sensor_data_view_plot(df, 'test_sensor1')
+PlotData().sensor_data_view_plot(df, 'test_sensor1')

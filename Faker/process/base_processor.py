@@ -4,6 +4,8 @@ import string
 import random
 import pandas as pd
 from collections import defaultdict
+from Faker.miner.analyzer import Analyzer
+from Faker.miner.visualize import ProcessVisualize, PlotData
 
 
 class BaseProcessor:
@@ -12,6 +14,11 @@ class BaseProcessor:
         self.senser_pointer = 0
         self._fa_sensor_name = defaultdict(list)
         self.token_id_len = 10
+        self.df = None
+
+        self.analyzer = Analyzer()
+        self.visualizer = ProcessVisualize(
+            './', 'ProcessMap', 'ProcessMap', 'Process')
 
     def _run(self, iter, by_fa=False):
         '''The `_run()` function runs the simulation for the given number of iterations.
@@ -143,7 +150,10 @@ class BaseProcessor:
         sensor_columns = [i[0] for i in sorted(
             self.senser_hash.items(), key=lambda x: x[1])]
 
-        return pd.DataFrame(self.logs, columns=['token_id', 'facility', '@timestamp'] + sensor_columns).sort_values(by='@timestamp')
+        self.df = pd.DataFrame(self.logs, columns=[
+                               'token_id', 'facility', '@timestamp'] + sensor_columns).sort_values(by='@timestamp')
+
+        return self.df
 
     def to_csv(self, iter, path):
         """
