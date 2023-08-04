@@ -2,7 +2,7 @@ from .base_processor import BaseProcessor
 from datetime import datetime, timedelta
 from collections import defaultdict
 import heapq
-import pandas as pd
+import random
 
 
 class CallStackProcessor(BaseProcessor):
