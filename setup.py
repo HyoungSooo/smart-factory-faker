@@ -5,7 +5,7 @@ with open("readme.md", "r") as fh:
 
 setuptools.setup(
     name="smart_factory_faker",  # Replace with your own username
-    version="0.9.0",
+    version="0.10.0",
     author="HyoungSooo",
     author_email="aaa57403@gmail.com",
     description="Smart-Factory-Faker",
