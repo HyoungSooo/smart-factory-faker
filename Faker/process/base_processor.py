@@ -78,30 +78,30 @@ class BaseProcessor:
 
     def _generate_sensor_log(self, sensors):
         base_sensor_log = [None] * self.senser_pointer
+        flag = True
         for sensor in sensors:
-            flag, data = sensor._get_values()
-            if flag:
-                if sensor.name in self.senser_hash:
-                    try:
-                        base_sensor_log[self.senser_hash[sensor.name]
-                                        ] = data
-                    except IndexError:
-                        diff = self.senser_hash[sensor.name] - \
-                            len(base_sensor_log)
-                        base_sensor_log += [None] * diff + \
-                            [data]
-                else:
-                    self.senser_hash[sensor.name] = self.senser_pointer
-                    diff = self.senser_hash[sensor.name] - len(base_sensor_log)
+            is_fine, data = sensor._get_values()
+
+            if flag and not is_fine:
+                flag = False
+
+            if sensor.name in self.senser_hash:
+                try:
+                    base_sensor_log[self.senser_hash[sensor.name]
+                                    ] = data
+                except IndexError:
+                    diff = self.senser_hash[sensor.name] - \
+                        len(base_sensor_log)
                     base_sensor_log += [None] * diff + \
                         [data]
-                    self.senser_pointer += 1
             else:
-                break
-        else:
-            return flag, base_sensor_log
+                self.senser_hash[sensor.name] = self.senser_pointer
+                diff = self.senser_hash[sensor.name] - len(base_sensor_log)
+                base_sensor_log += [None] * diff + \
+                    [data]
+                self.senser_pointer += 1
 
-        return flag, data
+        return flag, base_sensor_log
 
     def _generate_sensor_log_by_facility(self, sensors):
         sensor_log = [None] * len(sensors)

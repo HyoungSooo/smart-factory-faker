@@ -55,10 +55,10 @@ class CallStackProcessor(BaseProcessor):
 
     def _set_logs(self, token_id, node, time):
         flag, sensor_log = self._generate_sensor_log(node.sensor)
+        log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
+                                                            timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
+        self.logs.append(log_entry)
         if flag:
-            log_entry = [token_id, node.name, datetime.strftime(self.now + timedelta(seconds=time) +
-                                                                timedelta(seconds=node.time), '%Y-%m-%d %H:%M:%S')] + sensor_log
-            self.logs.append(log_entry)
             return node, time + node.time, True
         else:
             self.break_points[token_id] = sensor_log
