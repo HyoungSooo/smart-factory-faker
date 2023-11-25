@@ -1,11 +1,15 @@
 from Faker.sensor_data_generator.data_generator import SensorDataGenerator as sdg
 from Faker.factory.facility import Facility
 from Faker.factory.sensor import Sensor
-
+from Faker.factory.resources import Resources
 from Faker.factory.gate import *
-from Faker.process.processor import Processor
 from Faker.process.processor_stack import CallStackProcessor
 from Faker.miner.visualize import ProcessVisualize, PlotData
+
+
+k = Resources()
+k.add_resource(**{'name': 'A', 'time': 123})
+print(k.resources)
 
 normal = {
     'distribution': 'normal',
