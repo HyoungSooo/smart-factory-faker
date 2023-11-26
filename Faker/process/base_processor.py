@@ -9,12 +9,18 @@ from Faker.miner.visualize import ProcessVisualize, PlotData
 
 
 class BaseProcessor:
-    def __init__(self):
+    def __init__(self, start_node, route):
         self.senser_hash = {}
         self.senser_pointer = 0
         self._fa_sensor_name = defaultdict(list)
         self.token_id_len = 10
         self.df = None
+
+        self.start_node = start_node
+        self.route = route
+        self.logs = []
+        self.now = datetime.now()
+        self.break_points = defaultdict(str)
 
         self.analyzer = Analyzer()
         self.visualizer = ProcessVisualize(

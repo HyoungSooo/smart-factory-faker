@@ -7,13 +7,7 @@ import random
 
 class CallStackProcessor(BaseProcessor):
     def __init__(self, start_node, route):
-        self.start_node = start_node
-        self.route = route
-        self.logs = []
-        self.now = datetime.now()
-        self.break_points = defaultdict(str)
-
-        super().__init__()
+        super().__init__(start_node=start_node, route=route)
 
     def _run(self, iter):
         token_stack = self._set_start_token(iter)
